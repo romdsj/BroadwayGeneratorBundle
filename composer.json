@@ -1,0 +1,21 @@
+{
+  "name": "romaindesajardim/broadway-generator-bundle",
+  "description": "This bundle generates code for you",
+  "keywords": [],
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Romain De Sa Jardim",
+      "email": "romain.desajardim@gmail.com"
+    }
+  ],
+  "require": {
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": { "RomainDeSaJardim\\Bundle\\BroadwayGeneratorBundle\\": "" }
+  },
+  "minimum-stability": "dev"
+}
