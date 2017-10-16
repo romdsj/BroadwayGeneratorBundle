@@ -1,0 +1,25 @@
+<?php
+
+namespace {{ namespace }}\Command;
+
+{% block use_statements %}
+{% endblock use_statements %}
+
+{% block class_definition %}
+class {{ class_name }}
+{% endblock class_definition %}
+{
+{% block class_body %}
+    private $uuid;
+
+    public function __construct($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    public function getUUID()
+    {
+        return $this->uuid;
+    }
+{% endblock class_body %}
+}
