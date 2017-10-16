@@ -1,5 +1,5 @@
 {
-  "name": "romaindesajardim/broadway-generator-bundle",
+  "name": "romaindesajardim/broadwaygeneratorbundle",
   "description": "This bundle generates code for you",
   "keywords": [],
   "type": "symfony-bundle",
