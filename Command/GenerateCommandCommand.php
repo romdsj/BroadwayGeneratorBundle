@@ -15,7 +15,7 @@ class GenerateCommandCommand extends GeneratorCommand
     protected function configure()
     {
         $this
-            ->setName("rdsj:brodway:generate-command")
+            ->setName("rdsj:broadway:generate-command")
             ->setDescription("Generate a Broadway command")
             ->setDefinition(array(
                 new InputArgument('bundle', InputArgument::OPTIONAL, 'The bundle where the command is generated'),
