@@ -12,7 +12,8 @@
   ],
   "require": {
     "sensio/generator-bundle": "^3.1",
-    "broadway/broadway-bundle": "~0.1.0"
+    "broadway/broadway-bundle": "~0.1.0",
+    "phpunit/phpunit": "^6.2"
   },
   "autoload": {
     "psr-4": { "RomainDeSaJardim\\Bundle\\BroadwayGeneratorBundle\\": "" }
