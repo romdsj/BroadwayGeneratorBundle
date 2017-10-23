@@ -14,7 +14,7 @@ class CommandGenerator extends \Sensio\Bundle\GeneratorBundle\Generator\CommandG
         $this->filesystem = $filesystem;
     }
 
-    public function generate(BundleInterface $bundle, $name, $commandHandler = null)
+    public function generate(BundleInterface $bundle, $name)
     {
         $bundleDir = $bundle->getPath();
         $commandDir = $bundleDir.'/Command';

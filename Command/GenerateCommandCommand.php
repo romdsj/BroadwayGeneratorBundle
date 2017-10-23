@@ -2,11 +2,15 @@
 
 namespace RomainDeSaJardim\Bundle\BroadwayGeneratorBundle\Command;
 
+use Broadway\CommandHandling\CommandHandler;
 use RomainDeSaJardim\Bundle\BroadwayGeneratorBundle\Generator\CommandGenerator;
+use RomainDeSaJardim\Bundle\BroadwayGeneratorBundle\Manipulator\CommandHandlerManipulator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class GenerateCommandCommand extends GeneratorCommand
 {
@@ -18,10 +22,10 @@ class GenerateCommandCommand extends GeneratorCommand
             ->setName("rdsj:broadway:generate-command")
             ->setDescription("Generate a Broadway command")
             ->setDefinition(array(
-                new InputArgument('bundle', InputArgument::OPTIONAL, 'The bundle where the command is generated'),
-                new InputArgument('name', InputArgument::OPTIONAL, 'The command\'s name (e.g. app:my-command)'),
-                new InputArgument('command-handler', InputArgument::OPTIONAL, 'The command handler\'s name (e.g. CommandHandler\MyCommandHandler)'),
-            ))
+                                new InputArgument('bundle', InputArgument::OPTIONAL, 'The bundle where the command is generated'),
+                                new InputArgument('name', InputArgument::OPTIONAL, 'The command\'s name (e.g. app:my-command)'),
+                                new InputArgument('command-handler', InputArgument::OPTIONAL, 'The command handler\'s name (e.g. CommandHandler\MyCommandHandler)'),
+                            ))
         ;
     }
 
@@ -86,8 +90,8 @@ class GenerateCommandCommand extends GeneratorCommand
         } else {
             $output->writeln(array(
                                  '',
-                                 'Now, provide the name of the command handler as you type it in the console',
-                                 '(e.g. <comment>CommandHandler\MyCommandHandler</comment>)',
+                                 'Now, provide the service id of the command handler you registered',
+                                 '(e.g. <comment>my.commandler_handler</comment>)',
                                  '<info>Let it empty if you don\'t want to add automatically the command handler method to command handler</info>',
                              ));
             $question = new Question($questionHelper->getQuestion('Command handler', $commandHandler), $commandHandler);
@@ -121,24 +125,42 @@ class GenerateCommandCommand extends GeneratorCommand
         $questionHelper = $this->getQuestionHelper();
         $bundle = $input->getArgument('bundle');
         $name = $input->getArgument('name');
-        $commandHandler = $input->getArgument('command-handler');
+        $commandHandlerName = $input->getArgument('command-handler');
         try {
             $bundle = $this->getContainer()->get('kernel')->getBundle($bundle);
         } catch (\Exception $e) {
             $output->writeln(sprintf('<bg=red>Bundle "%s" does not exist.</>', $bundle));
         }
 
-        if ($commandHandler !== null) {
-            $filesystem = $this->getContainer()->get('filesystem');
-            if (!$filesystem->exists($bundle->getPath().'/'.$commandHandler.'.php')) {
-                $output->writeln(sprintf('<bg=red>CommandHandler "%s" does not exist.</>', $commandHandler));
-            }
+        try {
+            /** @var CommandHandler $commandHandler */
+            $commandHandler = $this->getContainer()->get($commandHandlerName);
+        } catch (ServiceNotFoundException $e) {
+            $output->writeln(sprintf('<bg=red>Command Handler "%s" does not exist.</>', $commandHandlerName));
+            $commandHandler = '';
         }
 
         $generator = $this->getGenerator($bundle);
-        $generator->generate($bundle, $name, $commandHandler);
-        $output->writeln(sprintf('Generated the <info>%s</info> command in <info>%s</info> and handle it in <info>%s</info>', $name, $bundle->getName(), $commandHandler));
+
+        $generator->generate($bundle, $name);
+
+        $output->writeln(sprintf('Generated the <info>%s</info> command in <info>%s</info> and handle it in <info>%s</info>', $name, $bundle->getName(), $commandHandlerName));
+
+
+        if (!empty($commandHandler)) {
+            $this->addMethodToCommandHandler($commandHandler, $bundle, $name);
+            $output->writeln(sprintf('Added the handle method of event : <info>%s</info> to command handler <info>%s</info>', $name, $commandHandlerName));
+        }
+
+
         $questionHelper->writeGeneratorSummary($output, array());
+    }
+
+    private function addMethodToCommandHandler(CommandHandler $commandHandler, Bundle $bundle, $methodName)
+    {
+        $commandHandlerManipulator = new CommandHandlerManipulator($commandHandler, $bundle);
+
+        $commandHandlerManipulator->addHandlerMethod($methodName);
     }
 
     protected function createGenerator()
