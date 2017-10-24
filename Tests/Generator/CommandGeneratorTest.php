@@ -19,7 +19,7 @@ class CommandGeneratorTest extends GeneratorTest
         $commandContent = file_get_contents($commandPath);
         $strings = array(
             'namespace Foo\\BarBundle\\Command',
-            'class AppFooBarCommand',
+            'class FooBarCommand',
             'private $uuid;',
             'public function __construct($uuid)',
             '$this->uuid = $uuid;',
