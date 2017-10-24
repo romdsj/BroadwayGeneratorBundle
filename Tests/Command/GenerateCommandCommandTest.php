@@ -93,10 +93,7 @@ class GenerateCommandCommandTest extends GenerateCommandTest
         $command = new GenerateCommandCommand();
 
         $command->setContainer($this->getContainer());
-        $helperSet = $this->getHelperSet();
-        if ($helperSet) {
-            $command->setHelperSet($helperSet);
-        }
+        $command->setHelperSet($this->getHelperSet());
         $command->setGenerator($generator);
 
         return $command;
