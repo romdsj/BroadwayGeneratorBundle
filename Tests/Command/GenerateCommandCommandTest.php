@@ -10,13 +10,14 @@ class GenerateCommandCommandTest extends GenerateCommandTest
 {
     protected $generator;
 
+    protected $bundle;
+
     /**
      * @dataProvider getInteractiveCommandData
      */
     public function testInteractiveCommand($options, $input, $expected)
     {
         list($bundle, $name) = $expected;
-        unset($bundle);
 
         $generator = $this->getGenerator();
         $generator
