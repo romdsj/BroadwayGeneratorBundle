@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "sensio/generator-bundle": "dev-master",
+    "sensio/generator-bundle": "^3.1.4",
     "broadway/broadway-bundle": "~0.1.0"
   },
   "require-dev": {
