@@ -11,14 +11,11 @@ class CommandHandlerManipulator extends Manipulator
 {
     protected $commandHandler;
 
-    protected $bundle;
-
     protected $reflected;
 
-    public function __construct(CommandHandler $commandHandler, Bundle $bundle)
+    public function __construct(CommandHandler $commandHandler)
     {
         $this->commandHandler = $commandHandler;
-        $this->bundle = $bundle;
         $this->reflected = new \ReflectionObject($commandHandler);
     }
 

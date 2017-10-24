@@ -148,7 +148,7 @@ class GenerateCommandCommand extends GeneratorCommand
 
 
         if (!empty($commandHandler)) {
-            $this->addMethodToCommandHandler($commandHandler, $bundle, $name);
+            $this->addMethodToCommandHandler($commandHandler, $name);
             $output->writeln(sprintf('Added the handle method of event : <info>%s</info> to command handler <info>%s</info>', $name, $commandHandlerName));
         }
 
@@ -156,9 +156,9 @@ class GenerateCommandCommand extends GeneratorCommand
         $questionHelper->writeGeneratorSummary($output, array());
     }
 
-    private function addMethodToCommandHandler(CommandHandler $commandHandler, Bundle $bundle, $methodName)
+    private function addMethodToCommandHandler(CommandHandler $commandHandler, $methodName)
     {
-        $commandHandlerManipulator = new CommandHandlerManipulator($commandHandler, $bundle);
+        $commandHandlerManipulator = new CommandHandlerManipulator($commandHandler);
 
         $commandHandlerManipulator->addHandlerMethod($methodName);
     }
