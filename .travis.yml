@@ -20,7 +20,7 @@ matrix:
 
 install:
     - composer $composer_extra update
-    - composer require phpunit/phpunit ~5.7
+    - composer require phpunit/phpunit ^5.7
 
 script:
-- phpunit
+- ./vendor/bin/phpunit
