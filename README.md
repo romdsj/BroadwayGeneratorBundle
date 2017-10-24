@@ -103,3 +103,6 @@ public function handleFooBar(FooBarCommand $command)
 
 You feel free to report a new issue or a feature requests if it doesn't already exist or is in the Todo list (for feature request)
  
+## Contribute
+
+You feel free to open pull request
