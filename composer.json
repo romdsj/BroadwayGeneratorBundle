@@ -19,7 +19,10 @@
     "symfony/phpunit-bridge": "^3.3"
   },
   "autoload": {
-    "psr-4": { "RomainDeSaJardim\\Bundle\\BroadwayGeneratorBundle\\": "" }
+    "psr-4": { "RomainDeSaJardim\\Bundle\\BroadwayGeneratorBundle\\": "" },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
   },
   "minimum-stability": "dev"
 }
