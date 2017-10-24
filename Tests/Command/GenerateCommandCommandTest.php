@@ -36,26 +36,74 @@ class GenerateCommandCommandTest extends GenerateCommandTest
         return array(
             array(
                 array(),
-                "FooBarBundle\napp:foo-bar\n",
-                array('FooBarBundle', 'app:foo-bar'),
+                "FooBarBundle\nFooBar\n\n",
+                array('FooBarBundle', 'FooBar'),
+            ),
+
+            array(
+                array(),
+                "FooBarBundle\nFooBar\napp.foo.command-handler\n",
+                array('FooBarBundle', 'FooBar', 'app.foo.command-handler'),
             ),
 
             array(
                 array('bundle' => 'FooBarBundle'),
-                "app:foo-bar\n",
-                array('FooBarBundle', 'app:foo-bar'),
+                "FooBar\n\n",
+                array('FooBarBundle', 'FooBar'),
             ),
 
             array(
-                array('name' => 'app:foo-bar'),
+                array('bundle' => 'FooBarBundle'),
+                "FooBar\napp.foo.command-handler\n",
+                array('FooBarBundle', 'FooBar'),
+            ),
+
+            array(
+                array('name' => 'FooBar'),
+                "FooBarBundle\n\n",
+                array('FooBarBundle', 'FooBar'),
+            ),
+
+            array(
+                array('name' => 'FooBar'),
+                "FooBarBundle\napp.foo.command-handler\n",
+                array('FooBarBundle', 'FooBar'),
+            ),
+
+            array(
+                array('command-handler' => 'app.foo.command-handler'),
+                "FooBarBundle\nFooBar\n",
+                array('FooBarBundle', 'FooBar', 'app.foo.command-handler'),
+            ),
+
+            array(
+                array('bundle' => 'FooBarBundle', 'name' => 'FooBar'),
+                '\n',
+                array('FooBarBundle', 'FooBar'),
+            ),
+
+            array(
+                array('bundle' => 'FooBarBundle', 'command-handler' => 'app.foo.command-handler'),
+                "FooBar\n",
+                array('FooBarBundle', 'FooBar', 'app.foo.command-handler'),
+            ),
+
+            array(
+                array('name' => 'FooBar', 'command-handler' => 'app.foo.command-handler'),
                 "FooBarBundle\n",
-                array('FooBarBundle', 'app:foo-bar'),
+                array('FooBarBundle', 'FooBar', 'app.foo.command-handler'),
             ),
 
             array(
-                array('bundle' => 'FooBarBundle', 'name' => 'app:foo-bar'),
+                array('bundle' => 'FooBarBundle', 'name' => 'FooBar'),
+                "app.foo.command-handler\n",
+                array('FooBarBundle', 'FooBar', 'app.foo.command-handler'),
+            ),
+
+            array(
+                array('bundle' => 'FooBarBundle', 'name' => 'FooBar', 'command-handler' => 'app.foo.command-handler'),
                 '',
-                array('FooBarBundle', 'app:foo-bar'),
+                array('FooBarBundle', 'FooBar', 'app.foo.command-handler'),
             ),
         );
     }
@@ -82,8 +130,8 @@ class GenerateCommandCommandTest extends GenerateCommandTest
     {
         return array(
             array(
-                array('bundle' => 'FooBarBundle', 'name' => 'app:my-command'),
-                array('FooBarBundle', 'app:my-command'),
+                array('bundle' => 'FooBarBundle', 'name' => 'FooBar', 'command-handler' => 'app.foo.command-handler'),
+                array('FooBarBundle', 'FooBar', 'app.foo.command-handler'),
             ),
         );
     }
