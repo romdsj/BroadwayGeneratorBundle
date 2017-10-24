@@ -1,7 +1,7 @@
 {
   "name": "romaindesajardim/broadwaygeneratorbundle",
   "description": "This bundle generates code for you",
-  "keywords": [],
+  "keywords": ["broadway", "symfony", "bundle", "BroadwayBundle"],
   "type": "symfony-bundle",
   "license": "MIT",
   "authors": [
