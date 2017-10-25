@@ -26,7 +26,7 @@ class CommandHandlerManipulator extends Manipulator
         }
 
         if (method_exists($this->commandHandler, sprintf("handle%s", $eventName))) {
-            throw new \RuntimeException(sprintf("Method %s is already implemented in Command Handler %s", $eventName, $this->getFilename()));
+            throw new \RuntimeException(sprintf("Method handle%s is already implemented in Command Handler %s", $eventName, $this->getFilename()));
         }
 
         $src = file($this->getFilename());
