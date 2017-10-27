@@ -14,7 +14,8 @@ class CommandHandlerManipulator extends BroadwayPhpManipulator
 
     protected function getObjectHandleType()
     {
-        return end(explode('\\', Command::class));
+        $tmp = explode('\\', Command::class);
+        return end($tmp);
     }
 
     protected function getMethodName()

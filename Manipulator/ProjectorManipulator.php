@@ -14,7 +14,8 @@ class ProjectorManipulator extends BroadwayPhpManipulator
 
     protected function getObjectHandleType()
     {
-        return end(explode('\\', DomainMessage::class));
+        $tmp = explode('\\', DomainMessage::class);
+        return end($tmp);
     }
 
     protected function getMethodName()
