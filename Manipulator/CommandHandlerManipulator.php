@@ -2,6 +2,7 @@
 
 namespace RomainDeSaJardim\Bundle\BroadwayGeneratorBundle\Manipulator;
 
+use Broadway\CommandHandling\Command;
 use Broadway\CommandHandling\CommandHandler;
 
 class CommandHandlerManipulator extends BroadwayPhpManipulator
@@ -11,14 +12,9 @@ class CommandHandlerManipulator extends BroadwayPhpManipulator
         parent::__construct($commandHandler);
     }
 
-    protected function getObjectType()
-    {
-        return 'Command Handler';
-    }
-
     protected function getObjectHandleType()
     {
-        return 'Command';
+        return end(explode('\\', Command::class));
     }
 
     protected function getMethodName()

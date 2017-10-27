@@ -43,7 +43,10 @@ abstract class BroadwayPhpManipulator extends Manipulator
         Generator::dump($this->getFilename(), implode('', $lines));
     }
 
-    abstract protected function getObjectType();
+    protected function getObjectType()
+    {
+        return $this->reflected->getShortName();
+    }
 
     abstract protected function getObjectHandleType();
 
