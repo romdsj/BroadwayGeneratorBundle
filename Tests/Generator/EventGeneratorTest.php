@@ -17,7 +17,7 @@ class EventGeneratorTest extends GeneratorTest
 
         $this->assertTrue(file_exists($eventPath), sprintf('%s file has been generated.', $eventFile));
 
-        $eventContent = file_get_contents($commandPath);
+        $eventContent = file_get_contents($eventPath);
         $strings = array(
             'namespace Foo\\BarBundle\\Event',
             'class FooBarEvent',
