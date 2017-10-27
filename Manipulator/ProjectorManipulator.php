@@ -22,4 +22,9 @@ class ProjectorManipulator extends BroadwayPhpManipulator
     {
         return 'apply';
     }
+
+    protected function getObjectType()
+    {
+        return 'Event';
+    }
 }
