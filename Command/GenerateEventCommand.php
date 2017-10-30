@@ -2,29 +2,29 @@
 
 namespace RomainDeSaJardim\Bundle\BroadwayGeneratorBundle\Command;
 
-use Broadway\CommandHandling\CommandHandler;
-use RomainDeSaJardim\Bundle\BroadwayGeneratorBundle\Generator\CommandGenerator;
-use RomainDeSaJardim\Bundle\BroadwayGeneratorBundle\Manipulator\CommandHandlerManipulator;
+use Broadway\ReadModel\Projector;
+use RomainDeSaJardim\Bundle\BroadwayGeneratorBundle\Generator\EventGenerator;
+use RomainDeSaJardim\Bundle\BroadwayGeneratorBundle\Manipulator\ProjectorManipulator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
-class GenerateCommandCommand extends GeneratorCommand
+class GenerateEventCommand extends GeneratorCommand
 {
     const MAX_ATTEMPTS = 5;
 
     protected function configure()
     {
         $this
-            ->setName("rdsj:broadway:generate-command")
-            ->setDescription("Generate a Broadway command")
+            ->setName("rdsj:broadway:generate-event")
+            ->setDescription("Generate a Broadway event")
             ->setDefinition(array(
-                                new InputArgument('bundle', InputArgument::OPTIONAL, 'The bundle where the command is generated'),
-                                new InputArgument('name', InputArgument::OPTIONAL, 'The command\'s name (e.g. Foo)'),
-                                new InputArgument('command-handler', InputArgument::OPTIONAL, 'The command handler\'s name (e.g. my.command_handler)'),
-                            ))
+                new InputArgument('bundle', InputArgument::OPTIONAL, 'The bundle where the event is generated'),
+                new InputArgument('name', InputArgument::OPTIONAL, 'The event\'s name'),
+                new InputArgument('projector', InputArgument::OPTIONAL, 'The projector\'s name (e.g. my.projector)'),
+            ))
         ;
     }
 
@@ -32,7 +32,7 @@ class GenerateCommandCommand extends GeneratorCommand
     {
         $bundle = $input->getArgument('bundle');
         $name = $input->getArgument('name');
-        $commandHandler = $input->getArgument('command-handler');
+        $commandHandler = $input->getArgument('projector');
         if (null !== $bundle && null !== $name && null !== $commandHandler) {
             return;
         }
@@ -63,18 +63,17 @@ class GenerateCommandCommand extends GeneratorCommand
         }
         // command name
         if (null !== $name) {
-            $output->writeln(sprintf('Command name: %s', $name));
+            $output->writeln(sprintf('Event name: %s', $name));
         } else {
             $output->writeln(array(
                                  '',
-                                 'Now, provide the name of the command',
-                                 '(e.g. <comment>Foo</comment>)',
+                                 'Now, provide the name of the event you want',
                                  '',
                              ));
-            $question = new Question($questionHelper->getQuestion('Command name', $name), $name);
+            $question = new Question($questionHelper->getQuestion('Event name', $name), $name);
             $question->setValidator(function ($answer) {
                 if (empty($answer)) {
-                    throw new \RuntimeException('The command name cannot be empty.');
+                    throw new \RuntimeException('The event name cannot be empty.');
                 }
                 return $answer;
             });
@@ -85,15 +84,15 @@ class GenerateCommandCommand extends GeneratorCommand
 
         // command handler
         if (null !== $commandHandler) {
-            $output->writeln(sprintf('CommandHandler name: %s', $commandHandler));
+            $output->writeln(sprintf('Projector name: %s', $commandHandler));
         } else {
             $output->writeln(array(
                                  '',
-                                 'Now, provide the service id of the command handler you registered',
-                                 '(e.g. <comment>my.command_handler</comment>)',
-                                 '<info>Let it empty if you don\'t want to add automatically the command handler method to command handler</info>',
+                                 'Now, provide the service id of the projector you registered',
+                                 '(e.g. <comment>my.projector</comment>)',
+                                 '<info>Let it empty if you don\'t want to add automatically the event method to projector</info>',
                              ));
-            $question = new Question($questionHelper->getQuestion('Command handler', $commandHandler), $commandHandler);
+            $question = new Question($questionHelper->getQuestion('Projector', $commandHandler), $commandHandler);
             $question->setValidator(function ($answer) {
                 if (empty($answer)) {
                     $answer = null;
@@ -102,7 +101,7 @@ class GenerateCommandCommand extends GeneratorCommand
             });
             $question->setMaxAttempts(self::MAX_ATTEMPTS);
             $commandHandler = $questionHelper->ask($input, $output, $question);
-            $input->setArgument('command-handler', $commandHandler);
+            $input->setArgument('projector', $commandHandler);
         }
 
         // summary and confirmation
@@ -124,7 +123,7 @@ class GenerateCommandCommand extends GeneratorCommand
         $questionHelper = $this->getQuestionHelper();
         $bundle = $input->getArgument('bundle');
         $name = $input->getArgument('name');
-        $commandHandlerName = $input->getArgument('command-handler');
+        $projectorName = $input->getArgument('projector');
         try {
             $bundle = $this->getContainer()->get('kernel')->getBundle($bundle);
         } catch (\Exception $e) {
@@ -132,38 +131,38 @@ class GenerateCommandCommand extends GeneratorCommand
         }
 
         try {
-            /** @var CommandHandler $commandHandler */
-            $commandHandler = $this->getContainer()->get($commandHandlerName);
+            /** @var Projector $projector */
+            $projector = $this->getContainer()->get($projectorName);
         } catch (ServiceNotFoundException $e) {
-            $output->writeln(sprintf('<bg=red>Command Handler "%s" does not exist.</>', $commandHandlerName));
-            $commandHandler = '';
+            $output->writeln(sprintf('<bg=red>Projector "%s" does not exist.</>', $projectorName));
+            $projector = '';
         }
 
         $generator = $this->getGenerator($bundle);
 
         $generator->generate($bundle, $name);
 
-        $output->writeln(sprintf('Generated the <info>%s</info> command in <info>%s</info>', $name, $bundle->getName()));
+        $output->writeln(sprintf('Generated the <info>%s</info> command in <info>%s</info> and handle it in <info>%s</info>', $name, $bundle->getName(), $projectorName));
 
 
-        if (!empty($commandHandler)) {
-            $this->addMethodToCommandHandler($commandHandler, $name);
-            $output->writeln(sprintf('Added the handle method of event : <info>%s</info> to command handler <info>%s</info>', $name, $commandHandlerName));
+        if (!empty($projector)) {
+            $this->addMethodToProjector($projector, $name);
+            $output->writeln(sprintf('Added the handle method of event : <info>%s</info> to projector <info>%s</info>', $name, $projectorName));
         }
 
 
         $questionHelper->writeGeneratorSummary($output, array());
     }
 
-    private function addMethodToCommandHandler(CommandHandler $commandHandler, $methodName)
+    private function addMethodToProjector(Projector $projector, $methodName)
     {
-        $commandHandlerManipulator = new CommandHandlerManipulator($commandHandler);
+        $commandHandlerManipulator = new ProjectorManipulator($projector);
 
         $commandHandlerManipulator->addHandlerMethod($methodName);
     }
 
     protected function createGenerator()
     {
-        return new CommandGenerator($this->getContainer()->get('filesystem'));
+        return new EventGenerator($this->getContainer()->get('filesystem'));
     }
 }
