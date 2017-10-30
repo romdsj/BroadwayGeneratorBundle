@@ -10,7 +10,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class GenerateCommandCommand extends GeneratorCommand
 {
@@ -23,8 +22,8 @@ class GenerateCommandCommand extends GeneratorCommand
             ->setDescription("Generate a Broadway command")
             ->setDefinition(array(
                                 new InputArgument('bundle', InputArgument::OPTIONAL, 'The bundle where the command is generated'),
-                                new InputArgument('name', InputArgument::OPTIONAL, 'The command\'s name (e.g. app:my-command)'),
-                                new InputArgument('command-handler', InputArgument::OPTIONAL, 'The command handler\'s name (e.g. CommandHandler\MyCommandHandler)'),
+                                new InputArgument('name', InputArgument::OPTIONAL, 'The command\'s name (e.g. Foo)'),
+                                new InputArgument('command-handler', InputArgument::OPTIONAL, 'The command handler\'s name (e.g. my.command_handler)'),
                             ))
         ;
     }
@@ -68,8 +67,8 @@ class GenerateCommandCommand extends GeneratorCommand
         } else {
             $output->writeln(array(
                                  '',
-                                 'Now, provide the name of the command as you type it in the console',
-                                 '(e.g. <comment>app:my-command</comment>)',
+                                 'Now, provide the name of the command',
+                                 '(e.g. <comment>Foo</comment>)',
                                  '',
                              ));
             $question = new Question($questionHelper->getQuestion('Command name', $name), $name);
@@ -91,7 +90,7 @@ class GenerateCommandCommand extends GeneratorCommand
             $output->writeln(array(
                                  '',
                                  'Now, provide the service id of the command handler you registered',
-                                 '(e.g. <comment>my.commandler_handler</comment>)',
+                                 '(e.g. <comment>my.command_handler</comment>)',
                                  '<info>Let it empty if you don\'t want to add automatically the command handler method to command handler</info>',
                              ));
             $question = new Question($questionHelper->getQuestion('Command handler', $commandHandler), $commandHandler);
@@ -144,7 +143,7 @@ class GenerateCommandCommand extends GeneratorCommand
 
         $generator->generate($bundle, $name);
 
-        $output->writeln(sprintf('Generated the <info>%s</info> command in <info>%s</info> and handle it in <info>%s</info>', $name, $bundle->getName(), $commandHandlerName));
+        $output->writeln(sprintf('Generated the <info>%s</info> command in <info>%s</info>', $name, $bundle->getName()));
 
 
         if (!empty($commandHandler)) {
