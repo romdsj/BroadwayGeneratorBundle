@@ -91,9 +91,34 @@ public function handleFooBar(FooBarCommand $command)
 }
 ```
 
+### Broadway Events
+  
+  This command generate a Broadway event and implements the handle method in the Broadway Projector automatically. You have just to add your parameters and code the handler.
+  
+  ```php bin/console rdsj:broadway:generate-event```
+  
+  :warning: If you use Symfony 2, use `app/console` instead of `bin/console`
+  
+  This command need 3 inputs :
+  
+  * `bundle` _(The bundle name where the Broadway Command will be generate)_
+  * `name` _(The name of the Broadway Command you want)_
+  * `projector` Optionnal _(The Projector's service id where the Broadway Event will be handle)_
+  
+  By default the command is run in the interactive mode and asks questions to determine values of thoose inputs
+  
+  But if you want, you can run the command in a non-interactive mode and providing the needed inputs
+  
+  ```php bin/console rdsj:broadway:generate-command --no-interaction FooBarBundle FooBar [foo.bar-projector]```
+  
+#### Exemple
+
+  Same as Broadway Commands' one
+
 ## TODO
 
-- [ ] Add a command to generate Broadway Event
+- [ ] Add a command to apply or handle an event in a projector, processor or saga
+- [x] Add a command to generate Broadway Event
 - [ ] Add a command to generate Broadway ReadModel
 - [ ] Add a command to generate Broadway Command Handler
 - [ ] Generate Command handler automatically if it doesn't exist on Broadway Command creation
