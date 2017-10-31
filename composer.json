@@ -12,7 +12,8 @@
   ],
   "require": {
     "sensio/generator-bundle": "^3.1.4",
-    "broadway/broadway-bundle": "~0.1"
+    "broadway/broadway-bundle": "~0.1",
+    "symfony/serializer": "~2.7|~3.0"
   },
   "require-dev": {
     "symfony/phpunit-bridge": "^3.3"
