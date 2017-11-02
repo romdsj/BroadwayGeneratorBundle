@@ -152,7 +152,7 @@ class GenerateReadModelCommand extends GeneratorCommand
     {
         $serviceConfigurationManipulator = new ServiceConfigurationManipulator($filePath);
 
-        $serviceConfigurationManipulator->addServiceConfiguration($bundle, $name);
+        $serviceConfigurationManipulator->addServiceConfiguration($bundle->getNamespace(), $name);
     }
 
     protected function createGenerator()

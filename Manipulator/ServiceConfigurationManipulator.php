@@ -25,12 +25,14 @@ class ServiceConfigurationManipulator extends Manipulator
         $this->encoder = new XmlEncoder();
     }
 
-    public function addServiceConfiguration(BundleInterface $bundle, $readModelName)
+    public function addServiceConfiguration($namespace, $readModelName)
     {
         $data = $this->encoder->decode(file_get_contents($this->filePath), $this->extension);
         $serviceId = sprintf('%s.readmodel', strtolower($readModelName));
+        $data['services'] = isset($data['services']) ? $data['services'] : [];
+        $data['services']['service'] = isset($data['services']['service']) ? $data['services']['service'] : [];
         if (!array_search($serviceId, array_column($data['services']['service'], '@id'))) {
-            $data['services']['service'][] = $this->getNewServiceData($bundle, $readModelName, $serviceId);
+            $data['services']['service'][] = $this->getNewServiceData($namespace, $readModelName, $serviceId);
         } else {
             throw new \RuntimeException(sprintf("Service id %s is already set in %s", $serviceId, $this->filePath));
         }
@@ -40,7 +42,7 @@ class ServiceConfigurationManipulator extends Manipulator
         file_put_contents($this->filePath, $data);
     }
 
-    private function getNewServiceData(BundleInterface $bundle, $readModelName, $serviceId)
+    private function getNewServiceData($namespace, $readModelName, $serviceId)
     {
         return [
             '@id'    => $serviceId,
@@ -54,7 +56,7 @@ class ServiceConfigurationManipulator extends Manipulator
                     '#' => $serviceId,
                 ],
                 [
-                    '#' => sprintf('%s\\ReadModel\\%sReadModel', $bundle->getNamespace(), $readModelName)
+                    '#' => sprintf('%s\\ReadModel\\%sReadModel', $namespace, $readModelName)
                 ]
             ]
         ];
