@@ -114,12 +114,93 @@ public function handleFooBar(FooBarCommand $command)
 #### Exemple
 
   Same as Broadway Commands' one
+  
+  
+### Broadway ReadModel's
+  
+  This command generate a Broadway ReadModel and add it to the service configuration of you're bundle. You have just to add your parameters and code the ReadModel.
+  
+  ```php bin/console rdsj:broadway:generate-readmodel```
+  
+  :warning: If you use Symfony 2, use `app/console` instead of `bin/console`
+  
+  This command need 3 inputs :
+  
+  * `bundle` _(The bundle name where the Broadway Command will be generate)_
+  * `name` _(The name of the Broadway Command you want)_
+  * `service-filename` Optionnal _(The service filename is the name of the file where your bundle services are configurated)
+  
+  By default the command is run in the interactive mode and asks questions to determine values of thoose inputs
+  
+  But if you want, you can run the command in a non-interactive mode and providing the needed inputs
+  
+  ```php bin/console rdsj:broadway:generate-readmodel --no-interaction FooBarBundle FooBar [services.xml]```
+  
+#### Exemple
+
+  ```php bin/console rdsj:broadway:generate-readmodel --no interaction FooBarBundle FooBar services.xml```
+  
+  This command generate a ReadModel like this.
+  
+  ```
+    <?php
+    
+    namespace FooBarBundle\ReadModel;
+    
+    use Broadway\ReadModel\Identifiable;
+    
+    class FooBarReadModel implements Identifiable
+    {
+        private $id;
+    
+        public function __construct($id)
+        {
+            $this->id = $id;
+        }
+    
+        public function getId()
+        {
+            return $this->id;
+        }
+    }
+
+  ```
+  
+  and transform `service.xml`
+  
+  ```
+    <?xml version="1.0"?>
+    <response xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+      <services>
+        <defaults public="false"/>
+      </services>
+    </response>
+
+  ```
+  
+  in
+  
+  ```
+    <?xml version="1.0"?>
+    <response xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+      <services>
+        <defaults public="false"/>
+        <service id="toto.readmodel" class="Broadway\ReadModel\ReadModel">
+          <factory method="create" service="broadway.read_model.repository_factory"/>
+          <argument>toto.readmodel</argument>
+          <argument>AppBundle\ReadModel\TotoReadModel</argument>
+        </service>
+      </services>
+    </response>
+
+  ```
+  in order to configure the new ReadModel service
 
 ## TODO
 
 - [ ] Add a command to apply or handle an event in a projector, processor or saga
 - [x] Add a command to generate Broadway Event
-- [ ] Add a command to generate Broadway ReadModel
+- [x] Add a command to generate Broadway ReadModel
 - [ ] Add a command to generate Broadway Command Handler
 - [ ] Generate Command handler automatically if it doesn't exist on Broadway Command creation
 - [ ] Add fields to Broadway Command to add fields and implements getters
