@@ -1,0 +1,26 @@
+<?php
+
+namespace {{ namespace }}\ReadModel;
+
+{% block use_statements %}
+use Broadway\ReadModel\Identifiable;
+{% endblock use_statements %}
+
+{% block class_definition %}
+class {{ class_name }} implements Identifiable
+{% endblock class_definition %}
+{
+{% block class_body %}
+    private $id;
+
+    public function __construct($id)
+    {
+        $this->id = $id;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+{% endblock class_body %}
+}
