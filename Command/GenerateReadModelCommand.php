@@ -90,7 +90,7 @@ class GenerateReadModelCommand extends GeneratorCommand
                                  '',
                                  'Now, provide the service filename of the bundle you registered',
                                  '(e.g. <comment>service.xml</comment>)',
-                                 '<info>Let it empty if you don\'t want to register automatically your readmodel as a service. Only XMl or YAML file are available</info>',
+                                 '<info>Let it empty if you don\'t want to register automatically your readmodel as a service. Only XMl file are available</info>',
                              ));
             $question = new Question($questionHelper->getQuestion('Service filename', $serviceFilename), $serviceFilename);
             $question->setValidator(function ($answer) {
